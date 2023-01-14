@@ -33,6 +33,26 @@ class CarController {
       this.next(error);
     }
   }
+
+  public async getAllCars() {
+    try {
+      const allCars = await this.service.getAllCars();
+      return this.res.status(200).json(allCars);
+    } catch (error) {
+      this.next(error);
+    }
+  }
+
+  public async findCarById() {
+    const { id } = this.req.params;
+    try {
+      const getCarById = await this.service.findCarById(id);
+      if (!getCarById) return this.res.status(404).json({ message: 'Car not found' });
+      return this.res.status(200).json(getCarById);
+    } catch (error) {
+      return this.res.status(422).json({ message: 'Invalid mongo id' });
+    }
+  }
 }
 
 export default CarController;
