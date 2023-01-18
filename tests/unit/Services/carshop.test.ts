@@ -90,6 +90,25 @@ describe('Testes camada service Car', function () {
     expect(result).to.be.deep.equal(output);
   });
 
+  it('Deve retornar corretamente o carro ao pesquisar por id', async function () {
+    const output: ICar = {
+      id: '634852326b35b59438fbea2f',
+      model: 'Marea',
+      year: 2002,
+      color: 'Black',
+      status: true,
+      buyValue: 15.99,
+      doorsQty: 4,
+      seatsQty: 5,
+    };
+    sinon.stub(Model, 'findById').resolves(output);
+
+    const service = new CarService();
+    const result = await service.findCarById('634852326b35b59438fbea2f');
+
+    expect(result).to.be.deep.equal(output);
+  });
+
   afterEach(function () {
     sinon.restore();
   });

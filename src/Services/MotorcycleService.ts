@@ -18,6 +18,25 @@ class MotorcycleService {
     // Retornar os dados com o id
     return this.createMotorcycleDomain(newMotorcycle);
   }
+
+  public async getAllMotorcycles() {
+    const motorcycleODM = new CreateMotorODM();
+    const allMotorcycles = await motorcycleODM.find();
+    const allMotorcyclesDomains = allMotorcycles.map((car) => this.createMotorcycleDomain(car));
+    return allMotorcyclesDomains;
+  }
+
+  public async findMotorcycleById(id: string) {
+    const motorcycleODM = new CreateMotorODM();
+    const getMotorcycleById = await motorcycleODM.findById(id);
+    return this.createMotorcycleDomain(getMotorcycleById);
+  }
+
+  public async updateById(id: string, motorData: IMotorcycle) {
+    const motorcycleODM = new CreateMotorODM();
+    const updateMotorcycleById = await motorcycleODM.update(id, motorData);
+    return this.createMotorcycleDomain(updateMotorcycleById);
+  }
 }
 
 export default MotorcycleService;
