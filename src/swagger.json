@@ -1,0 +1,602 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "Car Shop",
+      "version": "1.0.0",
+      "description": "API to manage a dealership and vehicles",
+      "contact": {
+        "name": "Crisna Bezerra",
+        "email": "crisnabto@gmail.com"
+      }
+    },
+    "schemes": ["http"],
+    "servers": [{ "url": "http://localhost:3001/" }],
+    "tags": [
+        { "name": "cars",
+          "description": "Endpoint for cars"},
+          { "name": "motorcycles",
+          "description": "Endpoint for motorcycles"}
+    ],
+    "paths": {
+      "/cars": {
+        "post": {
+          "tags": ["cars"],
+          "summary": "Register a new car in the database",
+          "requestBody": {
+            "description": "Car information",
+            "content": {
+              "application/json": {
+                "schema": {
+                    "$ref": "#/components/schemas/Cars"
+                  }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "example": "642219adc6ab577dbe968960"
+                        },
+                        "model": {
+                            "type": "string",
+                            "example": "Marea"
+                          },
+                          "year": {
+                            "type": "number",
+                            "example": 2002
+                          },
+                          "color": {
+                            "type": "string",
+                            "example": "Black"
+                          },
+                          "status": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "buyValue": {
+                            "type": "number",
+                            "example": 15990
+                          },
+                          "doorsQty": {
+                            "type": "number",
+                            "example": 4
+                          },
+                          "seatsQty": {
+                            "type": "number",
+                            "example": 5
+                          }
+                    }
+                  }
+                }
+              }
+            },
+            "500": { 
+                "description": "Error when registering car without a year field",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Car validation failed: year: Path `year` is required."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+          }
+        },
+        "get": {
+            "tags": ["cars"],
+            "summary": "Returns all cars",
+            "responses": {
+                "200": {
+                    "description": "List of cars",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/Cars"
+                        }
+                      }
+                    }
+                }
+            }
+        }
+      },
+      "/cars/{cardId}": {
+        "put": {
+            "tags": ["cars"],
+            "summary": "Edit car information",
+            "parameters": [{
+                "in": "path",
+                "name": "carId",
+                "description": "Car Id",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "642219adc6ab577dbe968960"
+            }],
+            "requestBody": {
+                "description": "Car information",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "model": {
+                                    "type": "string",
+                                    "example": "Marea"
+                                  },
+                                  "year": {
+                                    "type": "number",
+                                    "example": 2002
+                                  },
+                                  "color": {
+                                    "type": "string",
+                                    "example": "Black"
+                                  },
+                                  "status": {
+                                    "type": "boolean",
+                                    "example": false
+                                  },
+                                  "buyValue": {
+                                    "type": "number",
+                                    "example": 15990
+                                  },
+                                  "doorsQty": {
+                                    "type": "number",
+                                    "example": 4
+                                  },
+                                  "seatsQty": {
+                                    "type": "number",
+                                    "example": 5
+                                  }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "Returns car with edited information",
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "id": "64221dd16d278a1e05b8e35a",
+                                "model": "Marea",
+                                "year": 2002,
+                                "color": "Black",
+                                "status": true,
+                                "buyValue": 15990,
+                                "doorsQty": 4,
+                                "seatsQty": 5
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Returns error if car does not exists",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Car not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Returns error if car id is invalid",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Invalid mongo id"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "get": {
+            "tags": ["cars"],
+            "summary": "Returns a car with specific Id",
+            "parameters": [{
+                "id": "path",
+                "name": "carId",
+                "description": "Car Id",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "64221dd16d278a1e05b8e35a"
+            }],
+            "responses": {
+                "200": {
+                    "description": "Returns car information for specific Id",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Cars"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Returns error when carId does not exists",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Car not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Returns error when carId is invalid",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Invalid mongo id"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      },
+      "/motorcycles": {
+        "post": {
+            "tags": ["motorcycles"],
+            "summary": "Register a new motorcycle in the database",
+            "requestBody": {
+                "description": "Motorcycle information",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "model": {
+                                    "type": "string",
+                                    "example": "Honda Cb 600f Hornet"
+                                  },
+                                  "year": {
+                                    "type": "number",
+                                    "example": 2005
+                                  },
+                                  "color": {
+                                    "type": "string",
+                                    "example": "Yellow"
+                                  },
+                                  "status": {
+                                    "type": "boolean",
+                                    "example": true
+                                  },
+                                  "buyValue": {
+                                    "type": "number",
+                                    "example": 30000
+                                  },
+                                  "category": {
+                                    "type": "string",
+                                    "example": "Street"
+                                  },
+                                  "engineCapacity": {
+                                    "type": "number",
+                                    "example": 600
+                                  }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "Success",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "example": "642223fe2bf936a905ee3d56"
+                                      },
+                                      "model": {
+                                        "type": "string",
+                                        "example": "Honda Cb 600f Hornet"
+                                      },
+                                      "year": {
+                                        "type": "number",
+                                        "example": 2005
+                                      },
+                                      "color": {
+                                        "type": "string",
+                                        "example": "Yellow"
+                                      },
+                                      "status": {
+                                        "type": "boolean",
+                                        "example": true
+                                      },
+                                      "buyValue": {
+                                        "type": "number",
+                                        "example": 30000
+                                      },
+                                      "category": {
+                                        "type": "string",
+                                        "example": "Street"
+                                      },
+                                      "engineCapacity": {
+                                        "type": "number",
+                                        "example": 600
+                                      }
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": { 
+                "description": "Error when registering motorcycle without a year field",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Car validation failed: year: Path `year` is required."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            }
+        },
+        "get": {
+            "tags": ["motorcycles"],
+            "summary": "Returns all motorcycles",
+            "responses": {
+                "200": {
+                    "description": "List of motorcycles",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/Motorcycles"
+                        }
+                      }
+                    }
+                }
+            }
+        }
+      },
+      "/motorcycles/{motorcycleId}": {
+        "put": {
+            "tags": ["motorcycles"],
+            "summary": "Edit motorcycle information",
+            "parameters": [{
+                "in": "path",
+                "name": "motorcycleId",
+                "description": "Motorcycle Id",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "642223fe2bf936a905ee3d56"
+            }],
+            "requestBody": {
+                "description": "Motorcycle information",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "model": {
+                                    "type": "string",
+                                    "example": "Honda Cb 600f Hornet"
+                                  },
+                                  "year": {
+                                    "type": "number",
+                                    "example": 2005
+                                  },
+                                  "color": {
+                                    "type": "string",
+                                    "example": "Yellow"
+                                  },
+                                  "status": {
+                                    "type": "boolean",
+                                    "example": true
+                                  },
+                                  "buyValue": {
+                                    "type": "number",
+                                    "example": 30000
+                                  },
+                                  "category": {
+                                    "type": "string",
+                                    "example": "Street"
+                                  },
+                                  "engineCapacity": {
+                                    "type": "number",
+                                    "example": 600
+                                  }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "Returns motorcycle with edited information",
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "id": "642223fe2bf936a905ee3d56",
+                                "model": "Honda Cb 600f Hornet",
+                                "year": 2005,
+                                "color": "Yellow",
+                                "status": true,
+                                "buyValue": 30,
+                                "category": "Street",
+                                "engineCapacity": 600
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Returns error if motorcycle does not exists",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Motorcycle not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Returns error if motorcycle id is invalid",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Invalid mongo id"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "get": {
+            "tags": ["motorcycles"],
+            "summary": "Returns a motorcycle with specific Id",
+            "parameters": [{
+                "id": "path",
+                "name": "motorcycleId",
+                "description": "Motorcycle Id",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "642223fe2bf936a905ee3d56"
+            }],
+            "responses": {
+                "200": {
+                    "description": "Returns motorcycle information for specific Id",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Motorcycles"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Returns error when motorcycleId does not exists",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Motorcycle not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Returns error when motorcycleId is invalid",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Invalid mongo id"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Cars": {
+            "required": ["model", "year", "color", "buyValue", "doorsQty", "seatsQty", "status"],
+            "type": "array",
+            "items": {
+              "properties": {
+                "model": {"type":"string", "example": "Marea"},
+                "year": {"type": "number", "example": 2002},
+                "color": {"type": "string", "example": "Black"},
+                "buyValue": {"type": "number", "example": 15990},
+                "doorsQty": {"type": "number", "example": 4},
+                "seatsQty": {"type": "number", "example": 5}
+              }
+            }
+        },
+        "Motorcycles": {
+            "required": ["model", "year", "color", "buyValue", "category", "engineCapacity"],
+            "type": "array",
+            "items": {
+              "properties": {
+                "model": {"type":"string", "example": "Honda Cb 600f Hornet"},
+                "year": {"type": "number", "example": 2005},
+                "color": {"type": "string", "example": "Yellow"},
+                "buyValue": {"type": "number", "example": 30000},
+                "category": {"type": "string", "example": "Street"},
+                "engineCapacity": {"type": "number", "example": 600}
+              }
+            }
+        }
+      }
+    }
+  }
